@@ -3,7 +3,7 @@ package org.expr.brkga
 import org.scalajs.dom.*
 import org.scalajs.dom.html
 
-case class Point(x: Double, y: Double)
+case class Point(x: Double, y: Double, index: Int = 1)
 var points: List[Point] = Nil
 
 val PointSize = 3
@@ -16,6 +16,10 @@ object Point:
     ctx.arc(p.x, p.y, PointSize, 0, 2 * Math.PI)
     ctx.fill()
     ctx.stroke()
+    ctx.fillStyle = "black"
+    ctx.font = "12px Arial"
+    ctx.fillText(s"${p.index}", p.x + PointSize, p.y - PointSize)
+
   
   def distance(p1: Point, p2: Point): Double = 
     Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2))
@@ -44,7 +48,8 @@ def registerEvents(): Unit =
     val rect = canvas.getBoundingClientRect()
     val x = e.clientX - rect.left
     val y = e.clientY - rect.top
-    points = Point(x, y) :: points
+    val n = points.size 
+    points = Point(x, y, n + 1) :: points
     drawPoints(ctx)
     status(s"Point added at ($x, $y). Number of points: ${points.size}")
   }

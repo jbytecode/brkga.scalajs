@@ -39,17 +39,20 @@ def evaluate(ch: Chromosome, ga: BRKGA): Chromosome =
     
 
 def generation(pop: Population, brkga: BRKGA): Population = 
-    val evaluatedpop = pop.map(ch => evaluate(ch, brkga))
-    val sortedpop = evaluatedpop.sortBy(ch => ch.cost)
+    val sortedpop = pop
+                .map(ch => evaluate(ch, brkga))
+                .sortBy(ch => ch.cost)
     val elites = sortedpop.take(brkga.numelites)
     val mutants = Array.fill(brkga.nummutants)(createrandom(brkga.chlen))
-    var newpop = elites ++ mutants 
-    while (newpop.length < brkga.popsize){
-        val index_of_elite = (Math.random() * brkga.numelites).toInt
-        val index_of_nonelite = (Math.random() * (brkga.popsize - brkga.numelites)).toInt + brkga.numelites
-        val elite = sortedpop(index_of_elite)
-        val nonelite = sortedpop(index_of_nonelite)
-        newpop :+= cross(elite, nonelite, brkga.alpha)
-    }
+    val nnewchromosomes = brkga.popsize - elites.length - mutants.length
+    var newpop = elites ++ mutants ++ Array.tabulate(nnewchromosomes)(
+        _ => {
+            val index_of_elite = (Math.random() * brkga.numelites).toInt
+            val index_of_nonelite = (Math.random() * (brkga.popsize - brkga.numelites)).toInt + brkga.numelites
+            val elite = sortedpop(index_of_elite)
+            val nonelite = sortedpop(index_of_nonelite)
+            cross(elite, nonelite, brkga.alpha)
+        }
+    )
     newpop
 
