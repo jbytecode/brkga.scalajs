@@ -1,9 +1,12 @@
 package org.expr.brkga
 
 def createga(points: Array[Point]): BRKGA = 
+    val distancematrix = Array.tabulate(points.length, points.length) { (i, j) => 
+        Point.distance(points(i), points(j))
+    }
     val costfn: ObjectiveFunction = (perm: Array[Int]) => 
-        val tour = perm.map(points(_)) :+ points(perm(0))
-        tour.sliding(2).map { case Array(p1, p2) => Point.distance(p1, p2) }.sum
+        val tour = perm :+ perm.head // Return to the starting point
+        tour.sliding(2).map { case Array(i, j) => distancematrix(i)(j) }.sum
     BRKGA(
         popsize = 100,
         chlen = points.length,

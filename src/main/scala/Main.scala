@@ -40,6 +40,7 @@ def drawPoints(ctx: CanvasRenderingContext2D): Unit =
 
 def status(text: String): Unit = 
   divstatus.textContent = text
+  
 
 def registerEvents(): Unit = 
   resizeCanvas()
