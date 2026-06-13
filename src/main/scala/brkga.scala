@@ -31,9 +31,11 @@ def createrandom(chlen: Int): Chromosome =
 def createpopulation(popsize: Int, chlen: Int): Population = 
     Array.fill(popsize)(createrandom(chlen))
 
+def decode(ch: Chromosome): Array[Int] = 
+    ch.genes.zipWithIndex.sortBy(_._1).map(_._2)
+
 def evaluate(ch: Chromosome, ga: BRKGA): Chromosome = 
-    // Sort perm 
-    val perm = ch.genes.zipWithIndex.sortBy(_._1).map(_._2)
+    val perm = decode(ch)
     val cost = ga.costfn(perm)
     Chromosome(ch.genes, cost)
     
